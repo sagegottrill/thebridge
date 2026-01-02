@@ -1,0 +1,26 @@
+globalThis.__BUILD_MANIFEST = {
+  "pages": {
+    "/_app": []
+  },
+  "devFiles": [],
+  "polyfillFiles": [
+    "static/chunks/6badc_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_e930c2bc._.js",
+    "static/chunks/6badc_next_dist_compiled_react-dom_40ef01b4._.js",
+    "static/chunks/6badc_next_dist_compiled_react-server-dom-turbopack_e38d68a8._.js",
+    "static/chunks/6badc_next_dist_compiled_next-devtools_index_5c588828.js",
+    "static/chunks/6badc_next_dist_compiled_2ca923ab._.js",
+    "static/chunks/6badc_next_dist_client_5450b58a._.js",
+    "static/chunks/6badc_next_dist_2c94d53b._.js",
+    "static/chunks/6badc_@swc_helpers_cjs_cfeedbeb._.js",
+    "static/chunks/Music_SAGE_ORIVON EDGE_PROJECTS_the-bridge_a0ff3932._.js",
+    "static/chunks/turbopack-Music_SAGE_ORIVON EDGE_PROJECTS_the-bridge_80deeefc._.js"
+  ]
+};
+globalThis.__BUILD_MANIFEST.lowPriorityFiles = [
+"/static/" + process.env.__NEXT_BUILD_ID + "/_buildManifest.js",
+"/static/" + process.env.__NEXT_BUILD_ID + "/_ssgManifest.js"
+];

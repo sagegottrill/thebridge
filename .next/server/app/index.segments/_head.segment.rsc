@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[77565,["/_next/static/chunks/dafcc9f769ab65e4.js","/_next/static/chunks/ed5bf45827dfd8c0.js"],"ViewportBoundary"]
+3:I[77565,["/_next/static/chunks/dafcc9f769ab65e4.js","/_next/static/chunks/ed5bf45827dfd8c0.js"],"MetadataBoundary"]
+4:"$Sreact.suspense"
+5:I[94548,["/_next/static/chunks/dafcc9f769ab65e4.js","/_next/static/chunks/ed5bf45827dfd8c0.js"],"IconMark"]
+0:{"buildId":"zguEA84DmO5Ar5q8ETt2-","rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"The Bridge - Stop AI Amnesia"}],["$","meta","1",{"name":"description","content":"The missing link between your chat sessions. Keep your context alive across ChatGPT and Gemini."}],["$","link","2",{"rel":"icon","href":"/favicon.ico?favicon.0b3bf435.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L5","3",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"loading":null,"isPartial":false}
