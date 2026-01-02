@@ -61,6 +61,19 @@ const AppLayout: React.FC = () => {
       }
 
       console.log('Email submitted successfully:', email);
+
+      // Send welcome email
+      try {
+        await fetch('/api/email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email.toLowerCase().trim() }),
+        });
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // We don't block the success state if email fails
+      }
+
       setStatus('success');
       setEmail('');
 
