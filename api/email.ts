@@ -30,11 +30,14 @@ export default async function handler(
     }
 
     try {
+        // Hardcoded credentials as requested for immediate deployment
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
             auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+                user: 'danielnicholasdibal@gmail.com',
+                pass: 'zlnc wosb xjbe htmu',
             },
         });
 
