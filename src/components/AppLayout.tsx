@@ -64,14 +64,19 @@ const AppLayout: React.FC = () => {
 
       // Send welcome email
       try {
-        await fetch('/api/email', {
+        const res = await fetch('/api/email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: email.toLowerCase().trim() }),
         });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.error('Email API Failed:', errorData);
+          // Optional: alert(JSON.stringify(errorData)); 
+        }
       } catch (emailError) {
-        console.error('Failed to send welcome email:', emailError);
-        // We don't block the success state if email fails
+        console.error('Failed to send welcome email (Network):', emailError);
       }
 
       setStatus('success');
