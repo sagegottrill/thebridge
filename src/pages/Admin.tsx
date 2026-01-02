@@ -10,26 +10,51 @@ interface WaitlistEntry {
 }
 
 const Admin: React.FC = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [pin, setPin] = useState('');
+    const [session, setSession] = useState<any>(null);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loadingObj, setLoadingObj] = useState({ auth: false, data: false });
     const [entries, setEntries] = useState<WaitlistEntry[]>([]);
-    const [loading, setLoading] = useState(false);
 
-    // Hardcoded PIN for simple protection
-    const ADMIN_PIN = '1234';
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+            if (session) fetchEntries();
+        });
 
-    const handleLogin = (e: React.FormEvent) => {
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
+            if (session) fetchEntries();
+            else setEntries([]);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (pin === ADMIN_PIN) {
-            setIsAuthenticated(true);
-            fetchEntries();
-        } else {
-            alert('Incorrect PIN');
+        setLoadingObj(prev => ({ ...prev, auth: true }));
+        try {
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+            if (error) throw error;
+        } catch (error: any) {
+            alert(error.message);
+        } finally {
+            setLoadingObj(prev => ({ ...prev, auth: false }));
         }
     };
 
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+    };
+
     const fetchEntries = async () => {
-        setLoading(true);
+        setLoadingObj(prev => ({ ...prev, data: true }));
         try {
             const { data, error } = await supabase
                 .from('waitlist')
@@ -40,9 +65,8 @@ const Admin: React.FC = () => {
             setEntries(data || []);
         } catch (err) {
             console.error('Error fetching entries:', err);
-            alert('Failed to load data.');
         } finally {
-            setLoading(false);
+            setLoadingObj(prev => ({ ...prev, data: false }));
         }
     };
 
@@ -69,7 +93,7 @@ const Admin: React.FC = () => {
         document.body.removeChild(link);
     };
 
-    if (!isAuthenticated) {
+    if (!session) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center p-4">
                 <form onSubmit={handleLogin} className="w-full max-w-sm flex flex-col gap-4 p-8 rounded-2xl glass">
@@ -78,20 +102,29 @@ const Admin: React.FC = () => {
                             <Lock className="w-6 h-6 text-white" />
                         </div>
                     </div>
-                    <h2 className="text-xl font-heading text-center text-white mb-2">Admin Access</h2>
+                    <h2 className="text-xl font-heading text-center text-white mb-2">Admin Login</h2>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/20 outline-none focus:border-white/30 transition-all"
+                        required
+                    />
                     <input
                         type="password"
-                        value={pin}
-                        onChange={(e) => setPin(e.target.value)}
-                        placeholder="Enter PIN"
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-center text-white placeholder-white/20 outline-none focus:border-white/30 transition-all font-mono tracking-widest"
-                        autoFocus
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/20 outline-none focus:border-white/30 transition-all"
+                        required
                     />
                     <button
                         type="submit"
-                        className="w-full py-3 bg-white text-black font-semibold rounded-lg hover:bg-white/90 transition-all"
+                        disabled={loadingObj.auth}
+                        className="w-full py-3 bg-white text-black font-semibold rounded-lg hover:bg-white/90 transition-all disabled:opacity-50"
                     >
-                        Unlock
+                        {loadingObj.auth ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Sign In'}
                     </button>
                 </form>
             </div>
@@ -106,17 +139,25 @@ const Admin: React.FC = () => {
                         <h1 className="text-3xl font-heading font-bold mb-2">Waitlist Responses</h1>
                         <p className="text-white/40">Total entries: {entries.length}</p>
                     </div>
-                    <button
-                        onClick={downloadCSV}
-                        className="flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-white/90 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-                    >
-                        <Download className="w-4 h-4" />
-                        <span>Export CSV</span>
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={downloadCSV}
+                            className="flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-white/90 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                        >
+                            <Download className="w-4 h-4" />
+                            <span>Export CSV</span>
+                        </button>
+                        <button
+                            onClick={handleLogout}
+                            className="px-4 py-3 bg-white/5 text-white font-medium rounded-lg hover:bg-white/10 transition-all border border-white/10"
+                        >
+                            Sign Out
+                        </button>
+                    </div>
                 </header>
 
                 <div className="rounded-2xl border border-white/10 overflow-hidden glass">
-                    {loading ? (
+                    {loadingObj.data ? (
                         <div className="flex items-center justify-center py-20">
                             <Loader2 className="w-8 h-8 animate-spin text-white/40" />
                         </div>
